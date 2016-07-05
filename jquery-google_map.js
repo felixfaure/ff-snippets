@@ -5,7 +5,7 @@
 	gogoMapper();
 
 	function gogoMapper () {
-		if($maps.length<=0) return;
+		if(!$maps.length) return;
 
 		$maps.each(function(){
 			render_map( $(this) );
@@ -15,7 +15,7 @@
 	function render_map( $el ) {
 		var lat         = $el.data('lat'),
 			lng     = $el.data('lng'),
-			title   = $el.data("title"),
+			title   = $el.data("title") || "",
 			content = $el.data("content"),
 			latlng  = new google.maps.LatLng( lat, lng ),
 			yrStyle = [], //Your style
@@ -40,14 +40,16 @@
 				map      : map,
 				title    : title,
 				// icon     : image
-			}),
-			contentString = '<div id="map-content">'+'<strong>'+title+'</strong><div>'+content+'</div>'+'</div>',
-			infowindow = new google.maps.InfoWindow({
-				content: contentString
 			});
-		google.maps.event.addListener(marker, 'click', function() {
-			infowindow.open(map,marker);
-		});
+		if(content && content != "") {
+      var contentString = '<div id="map-content">'+'<strong>'+title+'</strong><div>'+content+'</div>'+'</div>',
+          infowindow = new google.maps.InfoWindow({
+            content: contentString
+          });
+      google.maps.event.addListener(marker, 'click', function() {
+  			infowindow.open(map,marker);
+  		});
+    }
 		google.maps.event.addDomListener(window, 'resize', function() {
 			map.setCenter(latlng);
 		});
