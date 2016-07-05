@@ -21,3 +21,48 @@ function test_history() {
   }
   return (window.history && 'pushState' in window.history);
 }
+
+//Function to test a css property
+//testCSS('object-fit');
+function testCSS(prop) {
+  if (prop.indexOf('-') != -1) {
+    prop = toCameCase(prop);
+  }
+  var ucProp = prop.charAt(0).toUpperCase() + prop.slice(1),
+      prefixes = 'Moz O ms Webkit',
+      prefixesArr = prefixes.split(' '),
+      props = (prop + ' ' + prefixesArr.join(ucProp + ' ') + ucProp).split(' ');
+
+  var el = document.createElement('a');
+  var propsLength = props.length,
+      i,
+      p;
+  for (i = 0; i < propsLength; i++) {
+    p = props[i];
+    if (el.style[p] !== undefined) {
+      return p;
+    }
+  }
+  return false;
+}
+
+//Video
+//return :
+//obj     => true
+//obj.ogg => 'probably'
+function support_video() {
+  var elem = createElement('video');
+  var bool = false;
+
+  try {
+    if (bool = !!elem.canPlayType) {
+      bool = new Boolean(bool);
+      bool.ogg = elem.canPlayType('video/ogg; codecs="theora"').replace(/^no$/, '');
+      bool.h264 = elem.canPlayType('video/mp4; codecs="avc1.42E01E"').replace(/^no$/, '');
+      bool.webm = elem.canPlayType('video/webm; codecs="vp8, vorbis"').replace(/^no$/, '');
+      bool.vp9 = elem.canPlayType('video/webm; codecs="vp9"').replace(/^no$/, '');
+      bool.hls = elem.canPlayType('application/x-mpegURL; codecs="avc1.42E01E"').replace(/^no$/, '');
+    }
+  } catch (e) {}
+  return bool;
+});
