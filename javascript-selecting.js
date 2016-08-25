@@ -58,3 +58,11 @@ function siblings(el) {
     return child !== el;
   });
 }
+
+
+// ================================================================================
+// Insert after
+// ================================================================================
+function insertAfter(newNode, el) {
+  el.parentNode.insertBefore(newNode, el.nextElementSibling);
+}
