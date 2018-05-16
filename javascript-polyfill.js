@@ -22,6 +22,7 @@
 	};
 }(Element.prototype));
 
+
 //Remove
 (function (ELEMENT) {
 	ELEMENT.remove = ELEMENT.remove || function remove() {
@@ -31,41 +32,141 @@
 	};
 }(Element.prototype));
 
-//array.prototype.indexOf (IE8)
-if (!Array.prototype.indexOf) {
-	Array.prototype.indexOf = function(searchElement, fromIndex) {
-		var k;
-		if (this == null) {
-			throw new TypeError('"this" is null or not defined');
-		}
 
-		var O = Object(this);
+// Prepend
+// Source: https://github.com/jserz/js_piece/blob/master/DOM/ParentNode/prepend()/prepend().md
+(function (arr) {
+  arr.forEach(function (item) {
+    if (item.hasOwnProperty('prepend')) {
+      return;
+    }
+    Object.defineProperty(item, 'prepend', {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function prepend() {
+        var argArr = Array.prototype.slice.call(arguments),
+          docFrag = document.createDocumentFragment();
 
-		var len = O.length >>> 0;
-		if (len === 0) {
-			return -1;
-		}
+        argArr.forEach(function (argItem) {
+          var isNode = argItem instanceof Node;
+          docFrag.appendChild(isNode ? argItem : document.createTextNode(String(argItem)));
+        });
 
-		var n = +fromIndex || 0;
-		if (Math.abs(n) === Infinity) {
-			n = 0;
-		}
+        this.insertBefore(docFrag, this.firstChild);
+      }
+    });
+  });
+})([Element.prototype, Document.prototype, DocumentFragment.prototype]);
 
-		if (n >= len) {
-			return -1;
-		}
 
-		k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+// Append
+// Source: https://github.com/jserz/js_piece/blob/master/DOM/ParentNode/append()/append().md
+(function (arr) {
+  arr.forEach(function (item) {
+    if (item.hasOwnProperty('append')) {
+      return;
+    }
+    Object.defineProperty(item, 'append', {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function append() {
+        var argArr = Array.prototype.slice.call(arguments),
+          docFrag = document.createDocumentFragment();
 
-		while (k < len) {
-			if (k in O && O[k] === searchElement) {
-				return k;
-			}
-			k++;
-		}
-		return -1;
-	};
-}
+        argArr.forEach(function (argItem) {
+          var isNode = argItem instanceof Node;
+          docFrag.appendChild(isNode ? argItem : document.createTextNode(String(argItem)));
+        });
+
+        this.appendChild(docFrag);
+      }
+    });
+  });
+})([Element.prototype, Document.prototype, DocumentFragment.prototype]);
+
+
+// Before
+// from: https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/before()/before().md
+(function (arr) {
+  arr.forEach(function (item) {
+    if (item.hasOwnProperty('before')) {
+      return;
+    }
+    Object.defineProperty(item, 'before', {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function before() {
+        var argArr = Array.prototype.slice.call(arguments),
+          docFrag = document.createDocumentFragment();
+
+        argArr.forEach(function (argItem) {
+          var isNode = argItem instanceof Node;
+          docFrag.appendChild(isNode ? argItem : document.createTextNode(String(argItem)));
+        });
+
+        this.parentNode.insertBefore(docFrag, this);
+      }
+    });
+  });
+})([Element.prototype, CharacterData.prototype, DocumentType.prototype]);
+
+
+// After
+//from: https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/after()/after().md
+(function (arr) {
+  arr.forEach(function (item) {
+    if (item.hasOwnProperty('after')) {
+      return;
+    }
+    Object.defineProperty(item, 'after', {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function after() {
+        var argArr = Array.prototype.slice.call(arguments),
+          docFrag = document.createDocumentFragment();
+
+        argArr.forEach(function (argItem) {
+          var isNode = argItem instanceof Node;
+          docFrag.appendChild(isNode ? argItem : document.createTextNode(String(argItem)));
+        });
+
+        this.parentNode.insertBefore(docFrag, this.nextSibling);
+      }
+    });
+  });
+})([Element.prototype, CharacterData.prototype, DocumentType.prototype]);
+
+
+// replaceWith
+// from: https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/replaceWith()/replaceWith().md
+(function (arr) {
+  arr.forEach(function (item) {
+    if (item.hasOwnProperty('replaceWith')) {
+      return;
+    }
+    Object.defineProperty(item, 'replaceWith', {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function replaceWith() {
+        var argArr = Array.prototype.slice.call(arguments),
+          docFrag = document.createDocumentFragment();
+
+        argArr.forEach(function (argItem) {
+          var isNode = argItem instanceof Node;
+          docFrag.appendChild(isNode ? argItem : document.createTextNode(String(argItem)));
+        });
+
+        this.parentNode.replaceChild(docFrag, this);
+      }
+    });
+  });
+})([Element.prototype, CharacterData.prototype, DocumentType.prototype]);
+
 
 //RequestAnimationFrame
 //https://gist.github.com/paulirish/1579671
@@ -91,21 +192,6 @@ if (!Array.prototype.indexOf) {
             clearTimeout(id);
         };
 }());
-
-//textContent (IE8)
-if (Object.defineProperty && Object.getOwnPropertyDescriptor && Object.getOwnPropertyDescriptor(Element.prototype, "textContent") && !Object.getOwnPropertyDescriptor(Element.prototype, "textContent").get) {
-	(function() {
-		var innerText = Object.getOwnPropertyDescriptor(Element.prototype, "innerText");
-		Object.defineProperty(Element.prototype, "textContent", {
-			get: function() {
-				return innerText.get.call(this);
-			},
-			set: function(s) {
-				return innerText.set.call(this, s);
-			}
-		});
-	})();
-}
 
 
 //Fill
@@ -174,6 +260,7 @@ if (!Array.prototype.find) {
     return undefined;
   };
 }
+
 
 //FindIndex
 //https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Array/findIndex
@@ -245,6 +332,24 @@ if (!Object.is) {
     } else {
       //Étapes 6.a: NaN == NaN
       return v1 !== v1 && v2 !== v2;
+    }
+  };
+}
+
+
+//String includes
+//https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/String/includes
+if ( !String.prototype.includes ) {
+  String.prototype.includes = function(search, start) {
+    'use strict';
+    if (typeof start !== 'number') {
+      start = 0;
+    }
+
+    if (start + search.length > this.length) {
+      return false;
+    } else {
+      return this.indexOf(search,start) !== -1;
     }
   };
 }
@@ -323,19 +428,59 @@ if (!Object.is) {
 })();
 
 
-//String includes
-//https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/String/includes
-if ( !String.prototype.includes ) {
-  String.prototype.includes = function(search, start) {
-    'use strict';
-    if (typeof start !== 'number') {
-      start = 0;
-    }
 
-    if (start + search.length > this.length) {
-      return false;
-    } else {
-      return this.indexOf(search,start) !== -1;
-    }
-  };
+// =====================================================================================================
+// IE8
+// =====================================================================================================
+
+//array.prototype.indexOf (IE8)
+if (!Array.prototype.indexOf) {
+	Array.prototype.indexOf = function(searchElement, fromIndex) {
+		var k;
+		if (this == null) {
+			throw new TypeError('"this" is null or not defined');
+		}
+
+		var O = Object(this);
+
+		var len = O.length >>> 0;
+		if (len === 0) {
+			return -1;
+		}
+
+		var n = +fromIndex || 0;
+		if (Math.abs(n) === Infinity) {
+			n = 0;
+		}
+
+		if (n >= len) {
+			return -1;
+		}
+
+		k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+
+		while (k < len) {
+			if (k in O && O[k] === searchElement) {
+				return k;
+			}
+			k++;
+		}
+		return -1;
+	};
+}
+
+
+//textContent (IE8)
+if (Object.defineProperty && Object.getOwnPropertyDescriptor && Object.getOwnPropertyDescriptor(Element.prototype, "textContent") && !Object.getOwnPropertyDescriptor(Element.prototype, "textContent").get) {
+	(function() {
+		var innerText = Object.getOwnPropertyDescriptor(Element.prototype, "innerText");
+		Object.defineProperty(Element.prototype, "textContent", {
+			get: function() {
+				return innerText.get.call(this);
+			},
+			set: function(s) {
+				return innerText.set.call(this, s);
+			}
+		});
+	})();
 }

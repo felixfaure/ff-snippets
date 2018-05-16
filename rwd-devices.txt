@@ -1,0 +1,35 @@
+-------
+2560 x3 (ordi paysage)
+-------
+1500 x1 (ordi paysage)
+1440 x3 (ordi paysage)
+1368 x1 (paysage)
+1366 x4 (paysage)
+1280 x10 (paysage)
+-------
+1024 x5 (paysage)
+960 x6 (portrait)
+912 x1 (portrait)
+853 x2 (paysage)
+-------
+800 x4 (portrait)
+768 x8 (portrait)
+740 x2 (paysage)
+736 x1 (paysage) *
+731 x5 (paysage)
+720 x3 (portrait)
+667 x1 (paysage) *
+640 x15 (paysage)
+600 x3 (portrait)
+569 x1 (paysage)
+568 x1 (paysage) *
+-------
+540 x2 (portrait)
+480 x4 (2 portrait, 2 paysage *)
+414 x1 (portrait) *
+411 x5 (portrait)
+384 x1 (portrait)
+375 x1 (portrait) *
+-------
+360 x16 (portrait)
+320 x4 (portrait) *

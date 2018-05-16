@@ -6,7 +6,7 @@
 
   //Select only the first node (or #id)
   function $(selector, container) {
-    if (selector.indexOf('#') === 0) return document.getElementById(selector.substr(1, selector.length));
+    if (!container && selector.indexOf('#') === 0) return document.getElementById(selector.substr(1, selector.length));
     return (container || document).querySelector(selector);
   };
 

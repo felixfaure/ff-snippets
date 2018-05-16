@@ -43,6 +43,16 @@ function outerHeight(el) {
 }
 outerHeight(el);
 
+//Dimensions image
+img.addEventListener("load", function() {
+  //Largeur dans l'attribut "width"
+  var width = img.width;
+  var height = img.height;
+  //Taille originale de l'image
+  var width = img.naturalWidth;
+  var height = img.naturalHeight;
+});
+
 //Scroll vertical/horizontal d'un élément
 var scrollY = el.scrollTop;
 var scrollX = el.scrollLeft;

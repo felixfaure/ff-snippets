@@ -1,0 +1,11 @@
+/* Au moins x éléments */
+li:nth-last-child(n + x):first-child,
+li:nth-last-child(n + x):first-child ~ li {
+  font-weight: 700;
+}
+
+/* x ou moins éléments */
+li:nth-last-child(-n + x):first-child,
+li:nth-last-child(-n + x):first-child ~ li {
+  font-weight: 700;
+}

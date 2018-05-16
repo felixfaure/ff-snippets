@@ -50,7 +50,7 @@ coinFlip();
 // Random a array value
 // example: 9
 function getRandomArray(arr) {
-    return arr[Math.floor(Math.random() * numPool.length)];
+    return arr[Math.floor(Math.random() * arr.length)];
 }
 var numPool = [ 1, 3, 5, 7, 9, 10 ],
 getRandomArray(numPool);

@@ -1,10 +1,10 @@
 (function(global) {
 
-  function parseHTML(str) {
+  function parseHTML(str,single) {
     var frag = document.createDocumentFragment();
     var tmp = frag.appendChild(document.createElement('div'));
     tmp.innerHTML = str;
-    return tmp.childNodes;
+    return single ? tmp.childNodes[0] : tmp.childNodes;
   }
 
   if(global.ff) global.ff.parseHTML = parseHTML;
