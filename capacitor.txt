@@ -1,0 +1,56 @@
+npm install @capacitor/core
+npm install @capacitor/cli --save-dev
+npx cap init
+npm install @capacitor/android
+npx cap add android
+npx cap open android
+npx cap sync (quand tu modifies pour maj l'app) 
+
+après build apk dans : ...\android\app\build\outputs\apk
+
+Pour login Google :
+===================
+- npm install @capacitor-firebase/authentication firebase
+- ...\android\variables.gradle ajout rgcfaIncludeGoogle = true
+- capacitor.config.json ajout :
+  "plugins": {
+    "FirebaseAuthentication": {
+      "skipNativeAuth": false,
+      "providers": ["google.com"]
+    }
+  }
+- Mettre le bon nom app et appID, après tu dois refaire les étapes suivante si tu changes
+- Récupération empreinte SHA-1 :
+	- Installation java (https://www.oracle.com/java/technologies/downloads/)
+	- Ajout path java aux variables d'environement ( C:\Program Files\Java\jdk-19\bin)
+	- keytool -list -v -alias androiddebugkey -keystore %USERPROFILE%\.android\debug.keystore et récupérer la valeur SHA-1
+- Créer projet firebase (https://console.firebase.google.com/)
+- Ajouter application android, package name c'est appId de capacitor.config.json, utiliser la valeur SHA-1 récupérer précédemment
+- Télécharges google-services.json et mets le dans ...\android\app
+- ...\android\app\src\main\res\values\strings.xml ajout <string name="server_client_id">client_id_de_app.apps.googleusercontent.com</string>
+	- Pour récupérer client_id vas dans la console google https://console.developers.google.com/apis/credentials
+	- normalement google t'as créé un projet
+	- clientID c'est ce qu'il y a à droite de "Web client  (auto created by Google Service)" dans la section "ID clients OAuth 2.0 "
+- Restes dans la console google et il faut régler l'écran de consentement
+- Toujour dans la console modifies clef précedement prise et dans "Origines JavaScript autorisées" ajoute http://localhost:8100/ et https://localhost:5173/
+- Ajout Authentification à firebase, activer méthode connexion google
+- Pour que ça marche pour le web aussi il faut que dans index.html tu rajoutes <meta name="google-signin-client_id" content="client_id_de_app.apps.googleusercontent.com">
+- Ajouter application web (on en aura besoin pour intérargir avec DB) 
+
+
+
+Splash screen et icones :
+=========================
+https://capacitorjs.com/docs/apis/splash-screen
+https://capacitorjs.com/docs/guides/splash-screens-and-icons
+npx @capacitor/assets generate --android
+
+
+Publication playstore :
+=======================
+https://developer.android.com/studio/publish/app-signing?hl=fr
+	Enregistré ici : C:\Users\...\keystores
+https://support.google.com/googleplay/android-developer/answer/9842756?hl=fr
+keytool -export -rfc -keystore upload-keystore.jks -alias upload -file upload_certificate.pem
+
+

@@ -1,0 +1,104 @@
+
+https://wiki.formation-fullstack.fr/minimal/deploy
+SSH : ssh user@url_site.ext
+
+
+NGINX :
+=======
+répertoire config des sites :
+	cd /etc/nginx/sites-available/
+	sudo vi sous_domaine.url_site.ext
+après création lien symbolique : sudo ln -s /etc/nginx/sites-available/sous_domaine.url_site.ext /etc/nginx/sites-enabled
+après une modif : sudo service nginx reload
+verif erreurs : nginx -t
+
+
+Ajout d'un sous domaine :
+=========================
+créer un dossier "exfolder" pour le sous domaine "sous_domaine"
+cd /etc/nginx/sites-available/
+sudo vi sous_domaine.url_site.ext
+	server {
+		server_name sous_domaine.url_site.ext;
+		location / {
+			root /home/user_name/exfolder;
+		}
+	}
+	si on veut tout rediriger vers index.html :
+	server {
+		server_name sous_domaine.url_site.ext;
+		location / {
+			root /home/user_name/exfolder;
+			try_files $uri $uri/ /index.html; (seulement si on veut tout rediriger vers index.html)
+		}
+	}
+	pour node rajouter en dessous location {...} :
+	location /api/ {
+		proxy_pass http://localhost:3000/api/;
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection 'upgrade';
+		proxy_set_header Host $host;
+		proxy_cache_bypass $http_upgrade;
+	}
+:wq (pour enregistrer et quiter, :q pour quiter sans enregistrer)
+sudo ln -s /etc/nginx/sites-available/sous_domaine.url_site.ext /etc/nginx/sites-enabled
+sudo service nginx reload
+sudo certbot --nginx
+
+
+PM2 :
+=====
+lancer process : pm2 start server.js --name test
+delete process :
+	pm2 stop 0
+	pm2 delete 0
+restart process : pm2 restart 0
+status : pm2 status
+log : pm2 log 0
+
+
+SFTP :
+======
+sudo apt update
+sudo apt install openssh-server
+sudo service ssh restart
+
+
+POSTGRES :
+==========
+Installation :
+	sudo apt update
+	sudo apt install postgresql postgresql-contrib
+start : sudo service postgresql start
+stop : sudo service postgresql stop
+donner droit utilisateur :
+	sudo -u postgres createuser votre_utilisateur -P
+	sudo -u postgres createdb -O votre_utilisateur votre_base_de_donnees
+utilisateur défaut : postgres
+mdp local : root
+port local : 5432
+
+créer DB :
+	psql -U postgres
+	CREATE DATABASE nom_de_votre_base_de_données;
+	\q
+connexion db : psql -U postgres -d quizz
+export : pg_dump -U postgres -d quizz -f C:\...\20240209-18_08.sql
+import : psql -U postgres -d quizz -f C:\...\fichier_de_sortie.sql
+import (ecrase anciennes données) : psql -U postgres -d quizz -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" -f C:\...\fichier_de_sortie.sql
+supprimer : dropdb -U postgres quizz
+afficher tables : \dt
+afficher lignes : SELECT * FROM questions;
+vider table(s) : TRUNCATE questions, categories;
+
+
+Prisma :
+========
+après avoir défini le modele, pour créer les tables :
+	npx prisma db push
+	npx prisma migrate dev --name init
+après des modifs au modèle :
+	npx prisma migrate dev --name title_change (générere un nouveau fichier de migration dans le dossier prisma/migrations)
+	npx prisma migrate deploy
+npx prisma generate
